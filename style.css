@@ -1,0 +1,243 @@
+/* ---------------------- */
+/*          basic         */
+
+label:has(:checked)   .not-checked {display: none;}
+label:not(:has(:checked)) .checked {display: none;}
+/* ---------------------- */
+
+
+/* ---------------------- */
+/*          icon          */
+
+.icon-frame {
+  cursor: pointer;
+  width: max-content;
+  height: max-content;
+}
+
+.icon {
+  --size: 1rem;
+  --line-radius: 2px;
+
+  anchor-name: --icon;
+  aspect-ratio: 1;
+  width: var(--size);
+  cursor: pointer;
+
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    background-color: currentColor;
+    border-radius: var(--line-radius);
+    position-anchor: --icon;
+    justify-self: anchor-center;
+    align-self: anchor-center;
+  }
+}
+
+.icon-plus {
+  &::before,&::after {
+    height: var(--size);
+    width: calc(2*var(--line-radius));
+  }
+  &::after {rotate: 90deg;}
+}
+
+.icon-close {
+  &::before,&::after {
+    height: calc(1.4*var(--size));
+    width:  calc(2*var(--line-radius));
+  }
+  &::before {rotate: 45deg;}
+  &::after {rotate: -45deg;}
+}
+
+/* デフォルト下向き */
+.icon-arrow {
+  transition: rotate 0.2s;
+
+  &::before, &::after {
+    height: calc(var(--size) * 0.7);
+    width:  calc(var(--line-radius) * 2);
+  }
+  &::before {
+    rotate: 45deg;
+    translate: calc( 0.25*var(--size) - 0.7*var(--line-radius)) calc(0.05*var(--size));
+  }
+  &::after {
+    rotate: -45deg;
+    translate: calc(-0.25*var(--size) + 0.7*var(--line-radius)) calc(0.05*var(--size));
+  }
+}
+/* ---------------------- */
+
+
+/* ---------------------- */
+/*       select-tag       */
+
+.select-tag {
+  --fill-color: gray;
+  --line-color: hsl(from var(--fill-color) h s calc(l - 17));
+  --def-color:  hsl(from var(--fill-color) h s calc(l - 7));
+  
+  color: var(--def-color);
+  background-color: transparent;
+  border: 1px solid var(--def-color);
+  
+  font-size: calc(1em - 1px);
+  font-weight: 500;
+  align-content: center;
+  
+  border-radius: 0.125em;
+  border-inline-start-width: 0.25em;
+  padding: 0.125em 0.375em;
+
+  &:has(:checked) {
+    color: white;
+    background-color: var(--fill-color);
+    border-color: var(--line-color);
+  }
+  
+  &.dark {
+    --line-color: hsl(from var(--fill-color) h s calc(l + 20));
+    --def-color:  hsl(from var(--fill-color) h s calc(l + 20));
+  }
+
+  input[type=checkbox] {display: none;}
+}
+/* ---------------------- */
+
+
+/* ---------------------- */
+/*      toggle-button     */
+
+.toggle-button {
+  --radius: 1rem;
+  --padding: 2px;
+  --color: seagreen;
+  gap: calc(0.5*var(--radius));
+  font-size: calc(2*var(--radius));
+
+  --transition-time: 0.2s;
+  display: flex;
+  align-items: center;
+  
+  input[type=checkbox] {display: none;}
+  &:has(:checked)   .not-checked {display: none;}
+  &:not(:has(:checked)) .checked {display: none;}
+  
+  label {
+    cursor: pointer;
+    position: relative;
+
+    aspect-ratio: 2 / 1;
+    height: calc(2*(var(--radius) + var(--padding)));
+    border-radius: calc(var(--radius) + var(--padding));
+
+    transition: background-color var(--transition-time);
+    background-color: #d9d9d9;
+    &:has(:checked) {background-color: var(--color);}
+  }
+
+  label::before {
+    content: '';
+    aspect-ratio: 1 / 1;
+    height: calc(2*var(--radius));
+    border-radius: 50%;
+    background-color: white;
+
+    position: absolute;
+    top: var(--padding);
+    left: var(--padding);
+
+    transition: left var(--transition-time);
+  }
+  label:has(:checked)::before {
+    left: calc(3*var(--padding) + 2*var(--radius));
+  }
+}
+/* ---------------------- */
+
+
+/* ---------------------- */
+/*      multi-select      */
+
+.multi-select {
+  height: 1.5em;
+  --transition-time: 0.2s;
+  
+  position: relative;
+  white-space: nowrap;
+  
+  /* セレクト部分 */
+  > :first-child {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 0.25em;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25em;
+    
+    padding: 0 0.5em;
+    height: stretch;
+    width: stretch;
+    cursor: pointer;
+    
+    > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    > .arrow {
+      flex-shrink: 0;
+      background-color: #999;
+      width: 1ch;
+      aspect-ratio: 3/2;
+      clip-path: polygon(0 100%, 50% 0, 100% 100%);
+      transition: rotate var(--transition-time);
+    }
+  }
+  
+  &.modal-close .multi-picker,
+  &.modal-close .background {display: none;}
+  &.modal-close .arrow {rotate: 180deg;}
+  .background {
+    width: stretch;
+    height: stretch;
+    background-color: transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
+}
+/* ドロップダウンメニュー */
+.multi-picker {
+  background: white;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+  
+  position: absolute;
+  z-index: 1000;
+  
+  padding: 0.25em 0.5em;
+  line-height: 1.5em;
+  max-height: 50vh;
+  min-width: stretch;
+  
+  overflow: hidden auto;
+  scrollbar-color: #ccc transparent;
+  scrollbar-width: thin;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+  }
+
+  input {margin: 0;}
+}
+/* ---------------------- */
+
