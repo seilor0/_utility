@@ -100,32 +100,26 @@ export function setOptions2MultiSelect (multiSelect, options) {
  * @param {Array || Int} content 追加する内容(forEach持ち) or 列数
  * @param {Number} thCol ヘッダーにする列の列数 デフォルトは-1(ヘッダーセルを作らない)
  * @param {Boolean} editable デフォルトfalse
- * @param {Object} dragEvent dragStart, dropが必要. nullならundraggableになる.
+ * @param {Map} eListener dragStart, dropが必要. nullならundraggableになる.
  * @returns {HTMLTableRowElement} 追加した行エレメント
  */
-export function addRow(parent, content, thCol=-1, dragEvent=null, editable=false) {
+export function addRow(parent, content, thCol=-1, eListener=null, editable=false) {
   if (!parent || !content) return;
   if (Number.isInteger(content))  {
     content = Array(content).fill(null);
   }
   const row = document.createElement('tr');
 
-  if (dragEvent) {
+  if (eListener) {
     row.draggable = true;
     row.addEventListener('dragenter', dragEnter);
     row.addEventListener('dragleave', dragLeave);
     row.addEventListener('dragover',  dragOver);
     
-    if (typeof(dragEvent.dragStart)=='function') {
-      row.addEventListener('dragstart', dragEvent.dragStart);
-    } else {
-      dragEvent.dragStart.forEach(fn=>row.addEventListener('dragstart', fn));
-    }
-    if (typeof(dragEvent.drop)=='function') {
-      row.addEventListener('drop', dragEvent.drop);
-    } else {
-      dragEvent.drop.forEach(fn=>row.addEventListener('drop',fn));
-    }
+    eListener.forEach((value,key) => {
+      if (typeof(value)=='function') row.addEventListener(key,value);
+      else value.forEach(val=>row.addEventListener(key,val));
+    });
   }
 
   content.forEach((value,i) => {

@@ -121,6 +121,7 @@ label:not(:has(:checked)) .checked {display: none;}
   --transition-time: 0.2s;
   display: flex;
   align-items: center;
+  white-space: nowrap;
   
   input[type=checkbox] {display: none;}
   &:has(:checked)   .not-checked {display: none;}
